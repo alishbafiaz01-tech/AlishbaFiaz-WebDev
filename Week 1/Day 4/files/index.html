@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Header / Title -->
+        <div class="form-header">
+            <h1>Registration Form</h1>
+            <p>Complete the form below to set up your account</p>
+        </div>
+
+        <!-- Profile Image -->
+        <div class="image-upload">
+            <img id="preview" src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Profile Preview">
+            <input type="file" id="profileImage" accept="image/*">
+            <label for="profileImage">Upload Photo</label>
+        </div>
+
+        <form id="regForm">
+
+            <!-- Name -->
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="name" placeholder="Babar Azam">
+                <span class="error" id="nameError"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="example@gmail.com">
+                <span class="error" id="emailError"></span>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter  password">
+                <span class="error" id="passwordError"></span>
+            </div>
+
+            <!-- Country  -->
+            <div class="form-group">
+                <label>Country</label>
+                <select id="country">
+                    <option value="">Select Country</option>
+                    <option value="pakistan">Pakistan</option>
+                    <option value="india">India</option>
+                    <option value="usa">USA</option>
+                    <option value="uk">UK</option>
+                </select>
+                <span class="error" id="countryError"></span>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+                <label>Phone Number</label>
+                <div class="phone-wrap">
+                    <span class="phone-code" id="phoneCode">+__</span>
+                    <input type="tel" id="phone" placeholder="Select country first">
+                </div>
+                <span class="error" id="phoneError"></span>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="dob">
+                <span class="error" id="dobError"></span>
+            </div>
+
+            <!-- City -->
+            <div class="form-group">
+                <label>City</label>
+                <select id="city">
+                    <option value="">Select City</option>
+                </select>
+                <span class="error" id="cityError"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn" disabled>Create Account</button>
+
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3>Registration Successful! 🎉</h3>
+            <div id="modalData"></div>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
