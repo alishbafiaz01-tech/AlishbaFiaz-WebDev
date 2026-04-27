@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Treasure Hunt</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="card">
+  <h1>🏴‍☠️ Treasure Hunt </h1>
+  <p class="sub">A treasure is hidden between 1 and 100. Find it within 7 attempts!</p>
+  <div class="dots" id="dots"></div>
+  <div id="status">Attempts remaining: <strong id="rem">7</strong></div>
+  <div class="row">
+    <input type="number" id="guess" min="1" max="100" placeholder="🔢 Enter 1–100" />
+    <button id="searchBtn">🔍 Search</button>
+  </div>
+  <div id="message"></div>
+  <div class="history" id="history"></div>
+  <button id="again" onclick="initGame()">🔄 Play Again</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
