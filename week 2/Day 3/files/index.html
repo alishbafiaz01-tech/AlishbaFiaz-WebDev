@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Employee Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Employee Dashboard</h1>
+
+  <!-- Search Input -->
+  <input type="text" id="searchInput" placeholder="Search by name or email..." />
+
+  <!-- Error Message (hidden by default) -->
+  <p id="errorMsg" style="display:none;">Failed to fetch users</p>
+
+  <!-- No Results Message (hidden by default) -->
+  <p id="noResults" style="display:none;">No users found</p>
+
+  <!-- Cards will appear here -->
+  <div id="grid"></div>
+
+  <script>
+
+    let allUsers = []; // store users globally for search
+
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+
+        // FILTER: only users where lat is less than 0
+        let filtered = data.filter(function(user) {
+          return parseFloat(user.address.geo.lat) < 0;
+        });
+
+        // SORT: alphabetically by name
+        filtered.sort(function(a, b) {
+          return a.name.localeCompare(b.name);
+        });
+
+        allUsers = filtered; // save for search use
+        displayCards(allUsers);
+
+      })
+      .catch(function(error) {
+        document.getElementById('errorMsg').style.display = 'block';
+      });
+
+
+    // DISPLAY CARDS
+    function displayCards(users) {
+
+      let grid = document.getElementById('grid');
+      grid.innerHTML = ''; // clear old cards
+
+      if(users.length === 0) {
+        document.getElementById('noResults').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('noResults').style.display = 'none';
+
+      users.forEach(function(user) {
+
+        let card = document.createElement('div');
+        let zip = user.address.zipcode;
+card.className = zip.startsWith('5') ? 'card special' : 'card';
+
+        card.innerHTML = `
+          <h2>${user.name}</h2>
+          <p>${user.email}</p>
+          <p>${user.address.city}</p>
+
+          <button onclick="showDetails(this)">Show Details</button>
+
+          <div class="details" style="display:none;">
+            <p><strong>Address:</strong> ${user.address.street}, ${user.address.suite}, ${user.address.city}</p>
+            <p><strong>CatchPhrase:</strong> ${user.company.catchPhrase}</p>
+          </div>
+        `;
+
+        grid.appendChild(card);
+
+      });
+    }
+
+
+    // SHOW DETAILS — only one at a time
+    function showDetails(button) {
+
+      let allDetails = document.querySelectorAll('.details');
+      allDetails.forEach(function(detail) {
+        detail.style.display = 'none';
+      });
+
+      let details = button.nextElementSibling;
+      details.style.display = 'block';
+
+    }
+
+
+    // SEARCH — real time filter
+    document.getElementById('searchInput').addEventListener('input', function() {
+
+      let searchValue = this.value.toLowerCase();
+
+      let filtered = allUsers.filter(function(user) {
+        return user.name.toLowerCase().includes(searchValue) ||
+               user.email.toLowerCase().includes(searchValue);
+      });
+
+      displayCards(filtered);
+
+    });
+
+  </script>
+
+</body>
+</html>

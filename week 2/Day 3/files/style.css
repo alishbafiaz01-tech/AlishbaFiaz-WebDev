@@ -1,0 +1,90 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+#searchInput {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px 16px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+#errorMsg {
+  text-align: center;
+  color: red;
+  font-size: 16px;
+}
+
+#noResults {
+  text-align: center;
+  color: gray;
+  font-size: 16px;
+}
+
+#grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 260px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+  font-size: 18px;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.card button {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.card button:hover {
+  background-color: #357abd;
+}
+
+.details {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.special {
+  background-color: #fff8e1;
+  border: 2px solid #4c3613;
+}
+
+.special h2 {
+  color: #e65100;
+}
