@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — Aura Store</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav id="mainNav"></nav>
+
+<div class="cart-page">
+  <h1 style="font-size:2rem;margin-bottom:2rem">Your Cart</h1>
+  <div id="cartContent"></div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  requireLogin();
+  renderNav('cart');
+
+  function renderCart() {
+    const cart = getCart();
+    const content = document.getElementById('cartContent');
+
+    if (cart.length === 0) {
+      content.innerHTML = `
+        <div class="cart-empty">
+          <div style="font-size:3rem;margin-bottom:1rem">🛒</div>
+          <h2>Your cart is empty</h2>
+          <p style="color:var(--text-muted);margin-bottom:1.5rem">Add some beautiful things to get started.</p>
+          <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+        </div>`;
+      return;
+    }
+
+    const subtotal = cartTotal();
+    const shipping = subtotal > 100 ? 0 : 9.99;
+    const tax      = +(subtotal * 0.08).toFixed(2);
+    const grandTotal = +(subtotal + shipping + tax).toFixed(2);
+
+    content.innerHTML = `
+      <div style="overflow-x:auto">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="cartRows"></tbody>
+        </table>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+        <a href="index.html" class="btn btn-outline">← Continue Shopping</a>
+        <button class="btn btn-danger" onclick="clearAllCart()">Clear Cart</button>
+      </div>
+
+      <div class="cart-summary">
+        <div class="summary-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+        <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? 'Free' : '$'+shipping.toFixed(2)}</span></div>
+        <div class="summary-row"><span>Tax (8%)</span><span>$${tax}</span></div>
+        <div class="summary-row total"><span>Total</span><span>$${grandTotal}</span></div>
+        <a href="checkout.html" class="btn btn-primary btn-full" style="margin-top:1.25rem">Proceed to Checkout →</a>
+        ${subtotal < 100 ? `<p style="font-size:.8rem;color:var(--text-muted);text-align:center;margin-top:.75rem">Add $${(100-subtotal).toFixed(2)} more for free shipping</p>` : '<p style="font-size:.8rem;color:var(--success);text-align:center;margin-top:.75rem">✓ You qualify for free shipping!</p>'}
+      </div>
+    `;
+
+    // Populate rows
+    const tbody = document.getElementById('cartRows');
+    tbody.innerHTML = cart.map(item => {
+      const p = PRODUCTS.find(pr => pr.id === item.id);
+      if (!p) return '';
+      return `
+        <tr>
+          <td>
+            <div class="cart-item-info">
+              <img src="${p.image}" alt="${p.name}" onclick="window.location.href='product.html?id=${p.id}'" style="cursor:pointer" />
+              <span>${p.name}</span>
+            </div>
+          </td>
+          <td>$${p.price}</td>
+          <td>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty(${p.id}, -1)">−</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${p.id}, 1)">+</button>
+            </div>
+          </td>
+          <td>$${(p.price * item.qty).toFixed(2)}</td>
+          <td><button class="btn btn-danger" onclick="removeItem(${p.id})">✕</button></td>
+        </tr>`;
+    }).join('');
+  }
+
+  function changeQty(productId, delta) {
+    const cart = getCart();
+    const item = cart.find(i => i.id === productId);
+    if (!item) return;
+    item.qty = Math.max(1, item.qty + delta);
+    saveCart(cart);
+    renderCart();
+  }
+
+  function removeItem(productId) {
+    const cart = getCart().filter(i => i.id !== productId);
+    saveCart(cart);
+    renderCart();
+    showToast('Item removed');
+  }
+
+  function clearAllCart() {
+    if (confirm('Remove all items from cart?')) {
+      saveCart([]);
+      renderCart();
+    }
+  }
+
+  renderCart();
+</script>
+</body>
+</html>

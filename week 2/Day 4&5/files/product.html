@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product — Aura Store</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav id="mainNav"></nav>
+
+<div class="detail-page">
+  <a class="back-link" href="index.html">← Back to Shop</a>
+
+  <div id="productContent">
+    <!-- Injected by JS -->
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  requireLogin();
+  renderNav('home');
+
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id'));
+  const product = PRODUCTS.find(p => p.id === id);
+
+  if (!product) {
+    document.getElementById('productContent').innerHTML = `
+      <div style="text-align:center;padding:4rem 0;color:var(--text-muted)">
+        <h2>Product not found.</h2>
+        <a href="index.html" class="btn btn-primary" style="margin-top:1.5rem;display:inline-flex">← Back to Shop</a>
+      </div>`;
+  } else {
+    document.title = `${product.name} — Aura Store`;
+    document.getElementById('productContent').innerHTML = `
+      <div class="detail-grid">
+        <div>
+          <img src="${product.image}" alt="${product.name}" />
+        </div>
+        <div class="detail-info">
+          <span class="tag">${product.category}</span>
+          <h1>${product.name}</h1>
+          <p class="detail-price">$${product.price}</p>
+          <p class="detail-desc">${product.desc}</p>
+
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+            <label style="font-size:.85rem;color:var(--text-muted)">Qty</label>
+            <div class="qty-control">
+              <button class="qty-btn" onclick="changeQty(-1)">−</button>
+              <span class="qty-num" id="qtyDisplay">1</span>
+              <button class="qty-btn" onclick="changeQty(1)">+</button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full" onclick="addMultiToCart()">Add to Cart</button>
+          <a href="cart.html" class="btn btn-outline btn-full" style="margin-top:.75rem">View Cart</a>
+        </div>
+      </div>
+
+      <!-- Related products -->
+      <div style="margin-top:4rem">
+        <h2 class="section-title">You Might Also Like</h2>
+        <div class="products-grid" id="relatedGrid"></div>
+      </div>
+    `;
+
+    let qty = 1;
+    window.changeQty = (delta) => {
+      qty = Math.max(1, qty + delta);
+      document.getElementById('qtyDisplay').textContent = qty;
+    };
+    window.addMultiToCart = () => {
+      for (let i = 0; i < qty; i++) addToCart(product.id);
+    };
+
+    // Related products
+    const related = PRODUCTS.filter(p => p.id !== product.id).slice(0, 4);
+    document.getElementById('relatedGrid').innerHTML = related.map(p => `
+      <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
+        <img src="${p.image}" alt="${p.name}" loading="lazy" />
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          <p class="price">$${p.price}</p>
+          <button class="btn btn-primary btn-full" onclick="event.stopPropagation();addToCart(${p.id})">Add to Cart</button>
+        </div>
+      </div>
+    `).join('');
+  }
+</script>
+</body>
+</html>

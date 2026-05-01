@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop — Aura Store</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav id="mainNav"></nav>
+
+<section class="hero">
+  <h1>Curated <span>Essentials</span><br>for Modern Living</h1>
+  <p>Thoughtfully sourced objects that bring beauty and intention to everyday life.</p>
+  <a href="#products" class="btn btn-primary">Explore Collection</a>
+</section>
+
+<!-- Filter bar -->
+<div style="max-width:1200px;margin:2rem auto 0;padding:0 2rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+  <button class="btn btn-outline filter-btn active" data-cat="All" onclick="filterProducts(this)">All</button>
+  <button class="btn btn-outline filter-btn" data-cat="Home" onclick="filterProducts(this)">Home</button>
+  <button class="btn btn-outline filter-btn" data-cat="Decor" onclick="filterProducts(this)">Decor</button>
+  <button class="btn btn-outline filter-btn" data-cat="Kitchen" onclick="filterProducts(this)">Kitchen</button>
+  <button class="btn btn-outline filter-btn" data-cat="Office" onclick="filterProducts(this)">Office</button>
+  <button class="btn btn-outline filter-btn" data-cat="Lifestyle" onclick="filterProducts(this)">Lifestyle</button>
+</div>
+
+<section class="section" id="products">
+  <h2 class="section-title">Our Collection</h2>
+  <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<script src="app.js"></script>
+<script>
+  const session = requireLogin();
+
+  renderNav('home');
+
+  let currentCat = 'All';
+
+  function renderProducts() {
+    const grid = document.getElementById('productsGrid');
+    const filtered = currentCat === 'All' ? PRODUCTS : PRODUCTS.filter(p => p.category === currentCat);
+    grid.innerHTML = filtered.map(p => `
+      <div class="product-card" onclick="openProduct(${p.id})">
+        <img src="${p.image}" alt="${p.name}" loading="lazy" />
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          <p class="desc">${p.desc}</p>
+          <p class="price">$${p.price}</p>
+          <button class="btn btn-primary btn-full" onclick="event.stopPropagation(); addToCart(${p.id})">Add to Cart</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openProduct(id) {
+    window.location.href = `product.html?id=${id}`;
+  }
+
+  function filterProducts(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    renderProducts();
+  }
+
+  renderProducts();
+</script>
+</body>
+</html>
